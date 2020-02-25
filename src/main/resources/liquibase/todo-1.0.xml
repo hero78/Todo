@@ -1,0 +1,77 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_table_user" author="mwesigyejohnbosco@gmail.com">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="m_user"/>
+            </not>
+        </preConditions>
+        <createTable tableName="m_user">
+            <column name="id" type="varchar(255)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="first_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="created_on" type="timestamp" defaultValueComputed="now()" >
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+    <changeSet id="create_table_task" author="mwesigyejohnbosco@gmail.com">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="m_task"/>
+            </not>
+        </preConditions>
+        <createTable tableName="m_task">
+            <column name="id" type="varchar(255)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="timestamp" defaultValueComputed="now()" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="m_task"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_user_id_on_m_task"
+                                 referencedTableName="m_user"
+                                 referencedColumnNames="id"
+                                 onDelete="RESTRICT"
+                                 onUpdate="RESTRICT"/>
+    </changeSet>
+    <changeSet id="insert_default_m_user"  author="johnboscomwesigye@gmail.com">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM m_user
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO m_user
+            (id,first_name,last_name,email,created_on)
+            VALUES
+            (uuid(),'John','Doe','admin@hero.com',now());
+        </sql>
+    </changeSet>
+</databaseChangeLog>
