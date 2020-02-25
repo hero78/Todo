@@ -40,6 +40,7 @@ public class TaskService {
         MTask mTask = taskRepository.findById(id).orElse(null);
         Task task = new Task();
         BeanUtils.copyProperties(mTask,task);
+        task.setUserId(mTask.getId());
         return task;
     }
 
@@ -49,6 +50,7 @@ public class TaskService {
         mTasks.forEach(t->{
             Task task = new Task();
             BeanUtils.copyProperties(t,task);
+            task.setUserId(t.getId());
             taskList.add(task);
         });
         return taskList;
